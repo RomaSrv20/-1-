@@ -1,135 +1,139 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const ScientistsApp());
+  runApp(const MyApp());
 }
 
-class ScientistsApp extends StatelessWidget {
-  const ScientistsApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Світові вчені',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const ScientistsListPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ScientistListScreen(),
     );
   }
 }
 
-class ScientistsListPage extends StatefulWidget {
-  const ScientistsListPage({super.key});
+class Scientist {
+  final String name;
+  final String description;
+  final String imageUrl;
 
-  @override
-  State<ScientistsListPage> createState() => _ScientistsListPageState();
+  const Scientist({
+    required this.name,
+    required this.description,
+    required this.imageUrl,
+  });
 }
 
-class _ScientistsListPageState extends State<ScientistsListPage> {
-  // Індекс вибраного елемента
-  int? selectedIndex;
+class ScientistListScreen extends StatelessWidget {
+  const ScientistListScreen({super.key});
 
-  // Дані про вчених
-  final List<Map<String, String>> scientists = [
-    {
-      'name': 'Альберт Ейнштейн',
-      'description': 'Теорія відносності, фізик',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg'
-    },
-    {
-      'name': 'Ісаак Ньютон',
-      'description': 'Закони руху та гравітація, фізик',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Sir_Isaac_Newton_%281642-1727%29.jpg'
-    },
-    {
-      'name': 'Марія Кюрі',
-      'description': 'Радіоактивність, хімік та фізик',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/6/69/Marie_Curie_c1920.jpg'
-    },
-    {
-      'name': 'Чарльз Дарвін',
-      'description': 'Теорія еволюції, біолог',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Charles_Darwin_by_G._Richmond.jpg'
-    },
-    {
-      'name': 'Нікола Тесла',
-      'description': 'Електротехнік, винахідник',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/d/d4/N.Tesla.JPG'
-    },
-    {
-      'name': 'Стівен Гокінг',
-      'description': 'Космолог, чорні діри',
-      'image': 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Stephen_Hawking.StarChild.jpg'
-    },
+  final List<Scientist> scientists = const [
+    Scientist(
+      name: 'Альберт Ейнштейн',
+      description: 'Теорія відносності, лауреат Нобелівської премії з фізики.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/d/d3/Albert_Einstein_Head.jpg',
+    ),
+    Scientist(
+      name: 'Ісаак Ньютон',
+      description: 'Закони руху та всесвітнього тяжіння.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/3/39/GodfreyKneller-IsaacNewton-1689.jpg',
+    ),
+    Scientist(
+      name: 'Марія Кюрі',
+      description: 'Радіоактивність, двічі лауреат Нобелівської премії.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/6/69/Marie_Curie_c1920.jpg',
+    ),
+    Scientist(
+      name: 'Галілео Галілей',
+      description: 'Астрономія, телескопічні відкриття.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/5/5a/Galileo_Galilei_2.jpg',
+    ),
+    Scientist(
+      name: 'Чарльз Дарвін',
+      description: 'Теорія еволюції, природний відбір.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/5/58/Charles_Darwin_by_Julia_Margaret_Cameron_2.jpg',
+    ),
+    Scientist(
+      name: 'Нікола Тесла',
+      description: 'Електротехніка, винахідник змінного струму.',
+      imageUrl:
+          'https://upload.wikimedia.org/wikipedia/commons/d/d4/N.Tesla.JPG',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Світові вчені')),
+      appBar: AppBar(
+        title: const Text('Світові вчені'),
+        centerTitle: true,
+      ),
       body: ListView.builder(
         itemCount: scientists.length,
         itemBuilder: (context, index) {
           final scientist = scientists[index];
-          final isSelected = selectedIndex == index;
 
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedIndex = index; // вибір елемента
-              });
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.blue[100] : Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: isSelected ? Colors.blue : Colors.grey.shade300,
-                    width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 3,
-                    offset: const Offset(2, 2),
-                  )
-                ],
+          return Card(
+            margin: const EdgeInsets.all(8),
+            child: ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.network(
+                  scientist.imageUrl,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.person, size: 50);
+                  },
+                ),
               ),
-              child: Row(
-                children: [
-                  // Зображення
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      scientist['image']!,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  // Текстова інформація
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              title: Text(
+                scientist.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(scientist.description),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text(scientist.name),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          scientist['name']!,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                        Image.network(
+                          scientist.imageUrl,
+                          height: 200,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.person, size: 100);
+                          },
                         ),
-                        Text(
-                          scientist['description']!,
-                          style: const TextStyle(fontSize: 14),
-                        ),
+                        const SizedBox(height: 12),
+                        Text(scientist.description),
                       ],
                     ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Закрити'),
+                      ),
+                    ],
                   ),
-                  // Іконка вибору
-                  if (isSelected)
-                    const Icon(Icons.check_circle, color: Colors.green)
-                ],
-              ),
+                );
+              },
             ),
           );
         },
